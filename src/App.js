@@ -26,13 +26,9 @@ class App extends Component {
   componentDidMount() {
     const coursesRef = firebase.database().ref().child('courses');
     coursesRef.once('value', courses => {
-      let coursesArray = [];
-      for (var course in courses.val()) {
-        coursesArray.push(courses.val()[course]);
-      }
-      console.log(coursesArray);
       this.setState({
-        courses: coursesArray
+        courses: courses.val(),
+        selectedCourse: Object.keys(courses.val())[0]
       })
     })
   }
@@ -59,7 +55,21 @@ class App extends Component {
     })
   }
 
+  changeCourse(event) {
+    this.setState({
+      selectedCourse: event.target.value
+    })
+  }
+
   render() {
+    console.log('selectedCourse', this.state.selectedCourse);
+    let scorecard = []
+    if (this.state.selectedCourse.length > 0) {
+      scorecard = this.state.courses[this.state.selectedCourse].scorecard.map((hole, holeIndex) => {
+        console.log(hole);
+        return <div>{hole.par}</div>
+      });
+    }
     return (
       <div className="App">
         <div className="App-header">
@@ -70,12 +80,17 @@ class App extends Component {
           <h4>Enter a Round</h4>
           <label>
             Choose a course
-            <select value={this.state.selectedCourse}>
-              {this.state.courses.map((course, key) => {
-                return <option key={course.courseName.trim() + key} value={course.courseName.trim()}>{course.courseName}</option>
+            <select value={this.state.selectedCourse} onChange={evt => this.changeCourse(evt)}>
+              {Object.keys(this.state.courses).map((courseKey, courseIndex) => {
+                return <option
+                        key={courseKey}
+                        value={courseKey}>{this.state.courses[courseKey].courseName}</option>
               })}
             </select>
           </label>
+          <div className="Course-display">
+            { scorecard }
+          </div>
           { this.state.round.map((val, i) => {
             return <input
               className="Enter-hole"
