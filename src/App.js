@@ -1,15 +1,41 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
+import * as firebase from 'firebase';
+
+firebase.initializeApp({
+    apiKey: "AIzaSyDVzBwvj1wapOtMCZP66quyMroD5IyZnSU",
+    authDomain: "golf-scores-9aba5.firebaseapp.com",
+    databaseURL: "https://golf-scores-9aba5.firebaseio.com",
+    projectId: "golf-scores-9aba5",
+    storageBucket: "golf-scores-9aba5.appspot.com",
+    messagingSenderId: "956334873971"
+});
 
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      selectedCourse: '',
+      courses: [],
       round: [...Array(18).fill(0)],
       rounds: []
     }
   };
+
+  componentDidMount() {
+    const coursesRef = firebase.database().ref().child('courses');
+    coursesRef.once('value', courses => {
+      let coursesArray = [];
+      for (var course in courses.val()) {
+        coursesArray.push(courses.val()[course]);
+      }
+      console.log(coursesArray);
+      this.setState({
+        courses: coursesArray
+      })
+    })
+  }
 
   addHole(evt, index) {
     let newRound = [].concat(this.state.round);
@@ -33,10 +59,6 @@ class App extends Component {
     })
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    console.log(this.state.rounds);
-  }
-
   render() {
     return (
       <div className="App">
@@ -46,6 +68,14 @@ class App extends Component {
         </div>
         <form className="Enter-round">
           <h4>Enter a Round</h4>
+          <label>
+            Choose a course
+            <select value={this.state.selectedCourse}>
+              {this.state.courses.map((course, key) => {
+                return <option key={course.courseName.trim() + key} value={course.courseName.trim()}>{course.courseName}</option>
+              })}
+            </select>
+          </label>
           { this.state.round.map((val, i) => {
             return <input
               className="Enter-hole"

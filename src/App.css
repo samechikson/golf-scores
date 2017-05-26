@@ -31,6 +31,10 @@ form.Enter-round input[type="number"]{
 
 .Rounds ul, .Rounds li {
   display: inline-block;
+  width: 100%;
+}
+.Rounds li {
+  width: 5%;
 }
 
 @keyframes App-logo-spin {
