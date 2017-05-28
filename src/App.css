@@ -25,16 +25,25 @@
   font-size: large;
 }
 
-form.Enter-round input[type="number"]{
-  width: 5%;
-}
-
 .Rounds ul, .Rounds li {
   display: inline-block;
   width: 100%;
 }
 .Rounds li {
   width: 5%;
+}
+
+.Course-display {
+  width: 100%;
+}
+
+.Hole-column {
+  float: left;
+  width: 5%;
+}
+
+.Hole-column input {
+  width: 100%;
 }
 
 @keyframes App-logo-spin {

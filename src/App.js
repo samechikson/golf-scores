@@ -41,7 +41,7 @@ class App extends Component {
     })
 
     if (index < 17)
-      this.refs["hole" + (index + 1)].focus();
+      this.refs["holeInput" + (index + 1)].focus();
     else
       this.refs["submitRound"].focus();
   }
@@ -67,7 +67,17 @@ class App extends Component {
     if (this.state.selectedCourse.length > 0) {
       scorecard = this.state.courses[this.state.selectedCourse].scorecard.map((hole, holeIndex) => {
         console.log(hole);
-        return <div>{hole.par}</div>
+        return <div className="Hole-column">
+                <p>{hole.hole}</p>
+                <p>{hole.par}</p>
+                  { (+hole.hole > 0 && +hole.hole <= 18 ) ?
+                    <p><input
+                      className="Enter-hole"
+                      type="number"
+                      onChange={evt => this.addHole(evt, holeIndex) }
+                      ref={"holeInput" + holeIndex}/>
+                    </p> : ''}
+               </div>
       });
     }
     return (
@@ -91,14 +101,6 @@ class App extends Component {
           <div className="Course-display">
             { scorecard }
           </div>
-          { this.state.round.map((val, i) => {
-            return <input
-              className="Enter-hole"
-              key={i}
-              type="number"
-              onChange={evt => this.addHole(evt, i) }
-              ref={"hole" + i}/>
-          })}
           <button onClick={this.submitRound.bind(this)} ref="submitRound">Submit Round</button>
         </form>
         <div className="Rounds">
